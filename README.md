@@ -1,16 +1,17 @@
-# Kuula viewer type definitions
+# Kuula Viewer API type definitions
 
 [![JSR Scope](https://jsr.io/badges/@guille)](https://jsr.io/@guille)
 [![JSR](https://jsr.io/badges/@guille/kuula)](https://jsr.io/@guille/kuula)
 [![JSR Score](https://jsr.io/badges/@guille/kuula/score)](https://jsr.io/@guille/kuula/score)
 
-Typescript definitions for **embedded Kuula Viewer**.
+TypeScript definitions for **embedded Kuula Viewer API**.
 
 ## Features
 
 - **Type safe** `window.KuulaPlayerAPI` and `KuulaPlayerAPI` objects
 - **Autocomplete** in all API methods and Events
-- **Documented parameters** to request a Tours via URL
+- **Documented parameters** to request Tours via URL
+- **Additional documentation** to the one found in [Kuula Docs](https://kuula.co/support)
 
 ## Installation
 
@@ -55,8 +56,6 @@ declare global {
   }
 }
 ```
-
-## Usage
 
 ## Issues
 
