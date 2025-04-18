@@ -1,12 +1,12 @@
 {
   "name": "@guille/kuula",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "tasks": {
-    "dev": "deno run --watch main.ts",
-    "pre-commit": "deno lint && deno fmt"
+    "dev": "deno run --watch mod.ts",
+    "pre-commit": "deno lint && deno fmt && deno doc --lint mod.ts"
   },
-  "exports": "./main.ts",
+  "exports": "./mod.ts",
   "publish": {
     "exclude": [".github", "tests"]
   },
