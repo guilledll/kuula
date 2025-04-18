@@ -1,10 +1,16 @@
-type KuulaPost = {
+/**
+ * Structure of Kuula Posts.
+ */
+export type KuulaPost = {
   id: string;
   description: string;
   title: string;
   cover: string;
 };
-type KuulaTour = {
+/**
+ * Structure of Kuula Tours.
+ */
+export type KuulaTour = {
   id: string;
   name: string;
   description: string;
@@ -12,20 +18,38 @@ type KuulaTour = {
   plans: string[];
 };
 
+/**
+ * Function dispatched when a Frame is loaded.
+ */
 export type FrameFunction = (event: FrameEvent) => void;
+/**
+ * Event received when a Frame is loaded.
+ */
 export type FrameEvent = {
   frame: number;
   data: { posts: KuulaPost[]; tour: KuulaTour };
   element: HTMLIFrameElement;
 };
 
+/**
+ * Function dispatched when a Post is loaded.
+ */
 export type PostFunction = (event: PostEvent) => void;
+/**
+ * Event received when a Post is loaded.
+ */
 export type PostEvent = {
   frame: number;
   data: Omit<KuulaPost, "cover">;
 };
 
+/**
+ * Function dispatched when a Frame orientation changes.
+ */
 export type OrientationFunction = (event: OrientationEvent) => void;
+/**
+ * Event received when Frame orientation changes.
+ */
 export type OrientationEvent = {
   frame: number;
   data: {
@@ -37,6 +61,9 @@ export type OrientationEvent = {
      * Represents the angle of the camera up and down
      */
     pitch: number;
+    /**
+     * Current zoom level of the camara.
+     */
     zoom: number;
     /**
      * Indicates if the frame is the focused element of the page
@@ -49,7 +76,13 @@ export type OrientationEvent = {
   };
 };
 
+/**
+ * Function dispatched when the user interacts with a Hotspot.
+ */
 export type HotspotFunction = (event: HotspotEvent) => void;
+/**
+ * Event received when a Hotspot is clicked.
+ */
 export type HotspotEvent = {
   frame: number;
   data: {
@@ -58,12 +91,21 @@ export type HotspotEvent = {
   };
 };
 
+/**
+ * Function dispatched when the user closes a Card.
+ */
 export type CardClosedFunction = (event: CardClosedEvent) => void;
+/**
+ * Event received when a Card is closed.
+ */
 export type CardClosedEvent = {
   frame: number;
   data: unknown;
 };
 
+/**
+ * @internal
+ */
 type EventCallbacks = {
   frameloaded: FrameFunction;
   hotspot: HotspotFunction;
@@ -72,8 +114,14 @@ type EventCallbacks = {
   cardclosed: CardClosedFunction;
 };
 
+/**
+ * @internal
+ */
 type KuulaCallback<T extends keyof EventCallbacks> = EventCallbacks[T];
 
+/**
+ * Kuula Player API interface to interact with the Viewer.
+ */
 export type KuulaPlayerApi = {
   /**
    * Listen to events emitted by the Kuula Iframe.
@@ -123,6 +171,14 @@ export type KuulaPlayerApi = {
    * @param pitch - Value of the zoom
    */
   setZoom: (frameId: number, zoom: number) => void;
+  /**
+   * Add or update parameters on the target Hotspot.
+   *
+   * @param frameId - ID of the target frame
+   * @param hotspotId - Target Hotspot on the frame
+   * @param param - Param name to assign
+   * @param value - Value to apply to the Param
+   */
   setParam: (
     frameId: number,
     hotspotId: string,
@@ -146,6 +202,12 @@ export type KuulaPlayerApi = {
    * @param autoRotate - Enable or disabled autorotation
    */
   setAutoRotate: (frameId: number, autoRotate: boolean | number) => void;
+  /**
+   * Close the active Card on the given Frame.
+   *
+   * @param frameId - ID of the target frame
+   * @param event - DOM event triggered by the close action
+   */
   closeCard: (frameId: number, event: Event) => void;
   /**
    * Manually trigger a click event on the given Hotspot.
