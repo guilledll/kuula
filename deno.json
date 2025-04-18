@@ -1,0 +1,16 @@
+{
+  "name": "@guille/kuula",
+  "version": "0.1.0",
+  "license": "MIT",
+  "tasks": {
+    "dev": "deno run --watch main.ts",
+    "pre-commit": "deno lint && deno fmt"
+  },
+  "exports": "./main.ts",
+  "publish": {
+    "exclude": [".github", "tests"]
+  },
+  "compilerOptions": {
+    "lib": ["dom", "deno.ns"]
+  }
+}
