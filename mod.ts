@@ -8,11 +8,11 @@
  * Structure of Kuula Posts.
  */
 export type KuulaPost = {
-  /** 
+  /**
    * Unique identifier of the post
    */
   id: string;
-  /** 
+  /**
    * Title of the post (can be empty)
    */
   title: string;
@@ -34,7 +34,7 @@ export type KuulaTour = {
    * Unique identifier of the tour
    */
   id: string;
-  /** 
+  /**
    * Name of the tour
    */
   name: string;
@@ -424,7 +424,7 @@ type KuulaBaseMessage = {
 export type MessageFrameLoaded = KuulaBaseMessage & {
   cmd: "frameloaded";
   data: { posts: KuulaPost[]; tour: KuulaTour };
-  /** 
+  /**
    * The Kuula URL given to the iframe
    */
   src: string;
