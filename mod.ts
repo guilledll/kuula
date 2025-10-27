@@ -1,10 +1,4 @@
 /**
- * Type definitions to interact with Kuula Player API.
- *
- * @module
- */
-
-/**
  * Structure of Kuula Posts.
  */
 export type KuulaPost = {
