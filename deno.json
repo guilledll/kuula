@@ -1,9 +1,8 @@
 {
   "name": "@guille/kuula",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "license": "MIT",
   "tasks": {
-    "dev": "deno run --watch mod.ts",
     "pre-commit": "deno lint && deno fmt && deno doc --lint mod.ts"
   },
   "exports": "./mod.ts",
