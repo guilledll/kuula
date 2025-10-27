@@ -1,6 +1,6 @@
 {
   "name": "@guille/kuula",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "tasks": {
     "pre-commit": "deno lint && deno fmt && deno doc --lint mod.ts"
