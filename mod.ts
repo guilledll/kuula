@@ -1,18 +1,46 @@
 /**
+ * Type definitions to interact with Kuula Player API.
+ *
+ * @module
+ */
+
+/**
  * Structure of Kuula Posts.
  */
 export type KuulaPost = {
+  /** 
+   * Unique identifier of the post
+   */
   id: string;
-  description: string;
+  /** 
+   * Title of the post (can be empty)
+   */
   title: string;
+  /**
+   * Post description, it usually matches the post title (can be empty)
+   */
+  description: string;
+  /**
+   * Post cover image URL, used to display in the Kuula platform
+   */
   cover: string;
 };
+
 /**
  * Structure of Kuula Tours.
  */
 export type KuulaTour = {
+  /**
+   * Unique identifier of the tour
+   */
   id: string;
+  /** 
+   * Name of the tour
+   */
   name: string;
+  /**
+   * A brief description of the tour (can be empty)
+   */
   description: string;
   excludes: string[];
   plans: string[];
@@ -21,32 +49,38 @@ export type KuulaTour = {
 /**
  * Function dispatched when a Frame is loaded.
  */
-export type FrameFunction = (event: FrameEvent) => void;
+export type FrameLoadedFunction = (event: FrameLoadedEvent) => void;
+
 /**
  * Event received when a Frame is loaded.
  */
-export type FrameEvent = {
+export type FrameLoadedEvent = {
   frame: number;
-  data: { posts: KuulaPost[]; tour: KuulaTour };
+  data: {
+    posts: KuulaPost[];
+    tour: KuulaTour;
+  };
   element: HTMLIFrameElement;
 };
 
 /**
  * Function dispatched when a Post is loaded.
  */
-export type PostFunction = (event: PostEvent) => void;
+export type PostLoadedFunction = (event: PostLoadedEvent) => void;
+
 /**
  * Event received when a Post is loaded.
  */
-export type PostEvent = {
+export type PostLoadedEvent = {
   frame: number;
   data: Omit<KuulaPost, "cover">;
 };
 
 /**
- * Function dispatched when a Frame orientation changes.
+ * Function dispatched when a Frame orientation changes or every 300ms.
  */
 export type OrientationFunction = (event: OrientationEvent) => void;
+
 /**
  * Event received when Frame orientation changes.
  */
@@ -62,7 +96,7 @@ export type OrientationEvent = {
      */
     pitch: number;
     /**
-     * Current zoom level of the camara.
+     * Current zoom level of the camera.
      */
     zoom: number;
     /**
@@ -80,6 +114,7 @@ export type OrientationEvent = {
  * Function dispatched when the user interacts with a Hotspot.
  */
 export type HotspotFunction = (event: HotspotEvent) => void;
+
 /**
  * Event received when a Hotspot is clicked.
  */
@@ -95,6 +130,7 @@ export type HotspotEvent = {
  * Function dispatched when the user closes a Card.
  */
 export type CardClosedFunction = (event: CardClosedEvent) => void;
+
 /**
  * Event received when a Card is closed.
  */
@@ -107,10 +143,10 @@ export type CardClosedEvent = {
  * @internal
  */
 type EventCallbacks = {
-  frameloaded: FrameFunction;
+  frameloaded: FrameLoadedFunction;
   hotspot: HotspotFunction;
   orientation: OrientationFunction;
-  postloaded: PostFunction;
+  postloaded: PostLoadedFunction;
   cardclosed: CardClosedFunction;
 };
 
@@ -240,7 +276,7 @@ export type KuulaPlayerApi = {
  *
  * @example An example of URL constructor:
  * ```ts
- * const defaultOptions: Partial<KuulaOptions> = {
+ * const defaultOptions: Partial<KuulaURLParams> = {
  *   info: 0,
  *   fs: 0,
  *   vr: 0,
@@ -367,3 +403,105 @@ export type KuulaURLParams = {
    */
   alpha: number;
 };
+
+/**
+ * @internal
+ */
+type KuulaBaseMessage = {
+  /**
+   * Indicates if the event comes from kuula iframe
+   */
+  kuula: boolean;
+  /**
+   * UUID identifier of the iframe that triggered the event
+   */
+  uuid: number;
+};
+
+/**
+ * MessageEvent data received from the iframe after it was loaded
+ */
+export type MessageFrameLoaded = KuulaBaseMessage & {
+  cmd: "frameloaded";
+  data: { posts: KuulaPost[]; tour: KuulaTour };
+  /** 
+   * The Kuula URL given to the iframe
+   */
+  src: string;
+};
+
+/**
+ * MessageEvent data received from the post that just started loading
+ */
+export type MessageStart = KuulaBaseMessage & {
+  cmd: "start";
+  data: undefined;
+};
+
+/**
+ * MessageEvent data received from the post that was processed but is not ready yet (image not loaded)
+ */
+export type MessagePostLoaded = KuulaBaseMessage & {
+  cmd: "postloaded";
+  data: Omit<KuulaPost, "cover">;
+};
+
+/**
+ * MessageEvent data received from the post that just finished loading its image (ready for interaction)
+ */
+export type MessagePostReady = KuulaBaseMessage & {
+  cmd: "postready";
+  data: { id: string; user: string; tainted: boolean };
+};
+
+/**
+ * MessageEvent data received from the post current orientation, this event is dispatched every 300ms
+ */
+export type MessageOrientation = KuulaBaseMessage & {
+  cmd: "orientation";
+  data: {
+    /**
+     * Represents the angle of the camera left and right
+     */
+    heading: number;
+    /**
+     * Represents the angle of the camera up and down
+     */
+    pitch: number;
+    /**
+     * Current zoom level of the camera.
+     */
+    zoom: number;
+    /**
+     * Indicates if the frame is the focused element of the page
+     */
+    focus: boolean;
+    /**
+     * Container <iframe> ID
+     */
+    src: number;
+  };
+};
+
+/**
+ * Type to handle received `MessageEvent` from Kuula iframe.
+ *
+ * Useful when you want to listen to events not listened in the main API.
+ *
+ * @example
+ * ```ts
+ * const postReady = (event: MessageEvent<KuulaMessageData>) => {
+ *    if (event.origin === 'https://kuula.co' && event.data.cmd === 'postready') {
+ *      // event.data is typed properly for 'postready' at this point
+ *    }
+ * }
+ *
+ * window.addEventListener('message', postReady)
+ * ```
+ */
+export type KuulaMessageData =
+  | MessageFrameLoaded
+  | MessageStart
+  | MessagePostLoaded
+  | MessagePostReady
+  | MessageOrientation;

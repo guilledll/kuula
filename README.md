@@ -1,4 +1,4 @@
-# Kuula Player API TypeScript Definitions
+# KuulaPlayerAPI TypeScript Definitions
 
 [![JSR Scope](https://jsr.io/badges/@guille)](https://jsr.io/@guille)
 [![JSR](https://jsr.io/badges/@guille/kuula)](https://jsr.io/@guille/kuula)
@@ -6,38 +6,24 @@
 
 TypeScript definitions for **embedded Kuula Player API**.
 
-[Kuula](https://kuula.co/) is the most popular virtual tour software to create
-3D 360 tours for real estate, architecture, construction, art galleries,
-education and more.
+[Kuula](https://kuula.co/) is a popular virtual tour software to create 3D 360
+tours for real estate, architecture, construction, art galleries, education and
+more.
 
 ## Features
 
 - **Type safe** `window.KuulaPlayerAPI` and `KuulaPlayerAPI` objects
-- **Autocomplete** in all API methods and Events
+- **Autocomplete** in all API methods, Events and Listeners
 - **Documented parameters** to request Tours via URL
 - **Additional documentation** to the one found in
   [Kuula Docs](https://kuula.co/support)
-
-## Installation
-
-For Node-based projects:
-
-```bash
-npx jsr add @guille/kuula -D
-```
-
-For Deno-based projects:
-
-```bash
-deno add @guille/kuula
-```
 
 ## Setup
 
 First, you need to set up Kuula in your project by following the
 [official installation guide](https://kuula.co/help/getting-started-api).
 
-Setup it consists in adding the API `<script>` tag on your site:
+It consists in adding the API `<script>` tag on your site:
 
 ```html
 <head>
@@ -54,11 +40,11 @@ objects will be available.
 import type { KuulaPlayerApi } from "@guille/kuula";
 
 declare global {
-  // Types global `KuulaPlayerAPI` object
+  // Type global `KuulaPlayerAPI` object
   const KuulaPlayerAPI: KuulaPlayerApi;
 
   interface Window {
-    // Types `window.KuulaPlayerAPI` object
+    // Type `window.KuulaPlayerAPI` object
     KuulaPlayerAPI: KuulaPlayerApi;
   }
 }
@@ -79,32 +65,29 @@ It is also possible to declare a function to safely add and remove event
 listeners:
 
 ```ts
-import type { FrameFunction } from "@guille/kuula";
+import type { FrameLoadedFunction } from "@guille/kuula";
 
-const frameLoaded: FrameFunction = (event) => {}; // Type safe function and parameter
+const frameLoaded: FrameLoadedFunction = (event) => {}; // Typed function and parameter
 
 KuulaPlayerAPI.addEventListener("frameloaded", frameLoaded);
 KuulaPlayerAPI.removeEventListener("frameloaded", frameLoaded);
 ```
 
-### Kuula share URL constructor
+### Kuula URL constructor
 
 Kuula allows [sharing posts](https://kuula.co/help/share-embed) using a **URL
 with parameters**; usually URLs look like this:
 
 ```
-https://kuula.co/share/xxxxx?logo=0&info=0&fs=0&vr=0&zoom=1&sd=1&gyro=0&...
+https://kuula.co/share/xxxxx?logo=0&info=0&zoom=1&sd=1&...
 ```
 
-This package exposes all **available parameters** to use while building a
-**share URL**.
-
-Type `KuulaOptions` can be used to build a **type safe URL**:
+Type `KuulaURLParams` can be used to build a **type safe URL**:
 
 ```ts
-import type { KuulaOptions } from "@guille/kuula";
+import type { KuulaURLParams } from "@guille/kuula";
 
-const defaultOptions: Partial<KuulaOptions> = {
+const defaultOptions: Partial<KuulaURLParams> = {
   info: 0,
   fs: 0,
   vr: 0,
@@ -121,6 +104,27 @@ let kuulaUrl = `https://kuula.co/share/xxxxx?`;
 for (const [key, value] of Object.entries(defaultOptions)) {
   kuulaUrl += "&" + key + "=" + value;
 }
+```
+
+### MessageEvent listening
+
+In some cases we may need to listen to events that are not accessible throw the
+API like, `start` or `postready`. To achieve this we can listen to `message`
+events.
+
+```ts
+import type { KuulaMessageData } from "@guille/kuula";
+
+const postReady = (event: MessageEvent<KuulaMessageData>) => {
+  if (
+    event.origin === "https://kuula.co" &&
+    event.data.cmd === "postready"
+  ) {
+    // 'event.data' is typed properly for 'postready' at this point
+  }
+};
+
+window.addEventListener("message", postReady);
 ```
 
 ## Issues

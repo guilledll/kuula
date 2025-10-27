@@ -30,3 +30,6 @@ jobs:
 
       - name: Run docs check
         run: deno doc --lint mod.ts
+
+      - name: Emulate JSR publish
+        run: deno publish --dry-run
